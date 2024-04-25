@@ -1,0 +1,20 @@
+environment: "local"
+storage:
+  address: "localhost"
+  port: "5432"
+  user: "evgeny"
+  password: "123"
+  db_name: "MyDB"
+http_server:
+  address: "localhost"
+  port: ":8080"
+  timeout: 4s
+  idle_timeout: 60s
+auth:
+  salt: "zsdfgtjrsj153_"
+  signed_key: "qbt"
+  refresh_ttl: 120h
+  access_ttl: 2h
+  
+
+
