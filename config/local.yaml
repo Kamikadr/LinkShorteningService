@@ -1,4 +1,4 @@
-environment: "local"
+environment: "container"
 storage:
   address: postgres
   port: "5432"
@@ -6,7 +6,7 @@ storage:
   password: "123"
   db_name: "MyDB"
   attempts_to_connect: 5
-  delay_to_next_attempt: 1s
+  attempt_delay: 3s
 http_server:
   address: "0.0.0.0"
   port: ":8080"

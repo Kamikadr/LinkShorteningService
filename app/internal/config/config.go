@@ -14,11 +14,13 @@ type Config struct {
 	AuthConfig  AuthConfig    `yaml:"auth"`
 }
 type StorageConfig struct {
-	Address  string `yaml:"address"`
-	Port     string `yaml:"port"`
-	User     string `yaml:"user"`
-	Password string `yaml:"password"`
-	DbName   string `yaml:"db_name"`
+	Address           string        `yaml:"address"`
+	Port              string        `yaml:"port"`
+	User              string        `yaml:"user"`
+	Password          string        `yaml:"password"`
+	DbName            string        `yaml:"db_name"`
+	AttemptsToConnect int           `yaml:"attempts_to_connect"`
+	AttemptDelay      time.Duration `yaml:"attempt_delay"`
 }
 type HttpConfig struct {
 	Address string `yaml:"address"`

@@ -12,6 +12,8 @@ import (
 	"Rest-shortcut/storage/postrges"
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/chi/v5/middleware"
+	"io"
+	"log"
 	"log/slog"
 	"net/http"
 	"os"
@@ -20,7 +22,10 @@ import (
 func main() {
 	conf := config.NewConfig()
 
-	logger := setupLogger(conf.Environment)
+	logger, logFile := setupLogger(conf.Environment)
+	if logFile != nil {
+		defer logFile.Close()
+	}
 
 	storage, err := postrges.NewStorage(conf.Storage)
 	if err != nil {
@@ -49,11 +54,32 @@ func setupAuth(authConfig config.AuthConfig) *api.Auth {
 	return auth
 }
 
-func setupLogger(env string) *slog.Logger {
+func setupLogger(env string) (*slog.Logger, *os.File) {
 	var logger *slog.Logger
-	logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
+	var logFile *os.File
+	switch env {
+	case "local":
+		{
+			logger = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
+		}
+	case "container":
+		{
+			logPath := os.Getenv("LOG_PATH")
+			if logPath == "" {
+				log.Fatalf("Log path is empty")
+			}
+			logFile, err := os.OpenFile(logPath, os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+			if err != nil {
+				log.Fatalf("Failed to open log file: %v", err)
+			}
+			multiWriter := io.MultiWriter(os.Stdout, logFile)
+			logger = slog.New(slog.NewJSONHandler(multiWriter, &slog.HandlerOptions{Level: slog.LevelInfo}))
+		}
+	default:
+		log.Fatalf("The environment %s is not supported", env)
+	}
 	logger.Info("Initialize logger")
-	return logger
+	return logger, logFile
 }
 
 func setupRouter(logger *slog.Logger, storage *postrges.Storage, auth *api.Auth) *chi.Mux {

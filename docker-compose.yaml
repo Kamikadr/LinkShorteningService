@@ -13,7 +13,7 @@ services:
     networks:
       - net
   app:
-    image: myapp
+    image: rest
     container_name: rest
     ports:
       - "8080:8080"
@@ -21,6 +21,9 @@ services:
       - postgres
     environment:
       CONFIG_PATH: "local.yaml"
+      LOG_PATH: "/build/logs/logs.log"
+    volumes:
+      - ./logs/rest-logs:/build/logs
     networks:
       - net
 
