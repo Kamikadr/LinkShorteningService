@@ -3,9 +3,11 @@ package postrges
 import (
 	"Rest-shortcut/internal/config"
 	"Rest-shortcut/lib/models"
+	"Rest-shortcut/lib/utils"
 	"database/sql"
 	"fmt"
 	_ "github.com/jackc/pgx/v5/stdlib"
+	"time"
 )
 
 type Storage struct {
@@ -20,7 +22,7 @@ func NewStorage(conf config.StorageConfig) (*Storage, error) {
 	if err != nil {
 		return nil, fmt.Errorf("%s Open data base: %w", op, err)
 	}
-	err = db.Ping()
+	err = utils.DoWithTries(db.Ping, 10, time.Second)
 	if err != nil {
 		return nil, fmt.Errorf("%s Ping data base: %w", op, err)
 	}
