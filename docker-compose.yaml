@@ -2,11 +2,28 @@ version: "3.9"
 services:
   postgres:
     image: postgres
+    container_name: app-db
     environment:
       POSTGRES_DB: "MyDB"
       POSTGRES_USER: "evgeny"
       POSTGRES_PASSWORD: "123"
     volumes:
       - .:/docker-entrypoint-initdb.d
+      - ./data:/var/lib/postgresql/data
+    networks:
+      - net
+  app:
+    image: myapp
+    container_name: rest
     ports:
-      - "5432:5432"
+      - "8080:8080"
+    depends_on:
+      - postgres
+    environment:
+      CONFIG_PATH: "local.yaml"
+    networks:
+      - net
+
+networks:
+  net:
+
