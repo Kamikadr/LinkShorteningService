@@ -16,8 +16,8 @@
 
 # Dependency directories (remove the comment below to include it)
 # vendor/
-data/
-logs/
+database/data/
+rest/logs/
 .idea/
 
 # Go workspace file

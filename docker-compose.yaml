@@ -8,8 +8,8 @@ services:
       POSTGRES_USER: "evgeny"
       POSTGRES_PASSWORD: "123"
     volumes:
-      - .:/docker-entrypoint-initdb.d
-      - ./data:/var/lib/postgresql/data
+      - ./database:/docker-entrypoint-initdb.d
+      - ./database/data:/var/lib/postgresql/data
     networks:
       - net
   app:
@@ -23,7 +23,7 @@ services:
       CONFIG_PATH: "local.yaml"
       LOG_PATH: "/build/logs/logs.log"
     volumes:
-      - ./logs/rest-logs:/build/logs
+      - ./rest/logs:/build/logs
     networks:
       - net
 
